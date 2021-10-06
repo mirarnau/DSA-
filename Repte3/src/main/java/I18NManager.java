@@ -1,29 +1,36 @@
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class I18NManager {
     private static I18NManager instance;
     //Hauria de ser un diccionari.
-    List<String> listCache = new ArrayList<String>();
+    public Map <String, String> mapCache = new HashMap<String,String>();
     private I18NManager() {
     }
 
-    public get
+    //Mira si tenemos dicha búsqueda en la caché.
+    public String getFromCache (String idNom){
+        return mapCache.get(idNom);
+    }
+
+    //Estructura del Singleton.
     public static I18NManager getInstance(){
         if (instance==null) {
             instance = new I18NManager();
-
         }
         return instance;
     }
 
     public String getText(String idParaula, String nomArxiu){
-        ResourceBundle rb = listCache.get(nomArxiu);
-
-
-        ResourceBundle rb = ResourceBundle.getBundle(nomArxiu);
-        return rb.getString(idParaula);
+        if (this.getFromCache(idParaula) != null){
+            System.out.println("Estava a la caché.");
+            return this.getFromCache(idParaula);
+        }
+        else {
+            ResourceBundle rb = ResourceBundle.getBundle(nomArxiu);
+            mapCache.put(idParaula, rb.getString(idParaula));
+            System.out.println("No estava a la caché");
+            return rb.getString(idParaula);
+        }
+                 
     }
 }
